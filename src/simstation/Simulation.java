@@ -4,11 +4,12 @@ import mvc.Model;
 
 public class Simulation extends Model{
 
+	
+	private static final long serialVersionUID = 1L;
 	protected String name;
 	protected Long clock = 0L;
-	protected AgentState state = AgentState.READY;
-	Thread thread = new Thread();
-	
+	final static int SIZE = 300;
+	private Agent ag;
 	
 	public Long getClock(){
 		return clock;
@@ -17,23 +18,23 @@ public class Simulation extends Model{
 	public Simulation() 
 	{
 		super();
-		state = AgentState.READY;
-		thread = new Thread(this);
+		ag.state = AgentState.READY;
+		ag.thread = new Thread();
 	}
 	
 	public void run()
 	{
-		state =  AgentState.RUNNING;
-		thread = Thread.currentThread();
+		ag.state =  AgentState.RUNNING;
+		ag.thread = Thread.currentThread();
 		changed();
-		while(state != AgentState.STOPPED)
+		while(ag.state != AgentState.STOPPED)
 		{
 			update();
 			try {
 				Thread.sleep(50);
 				synchronized(this)
 				{
-					while(state == AgentState.SUSPENDED)
+					while(ag.state == AgentState.SUSPENDED)
 					{
 						wait();
 					}
@@ -48,19 +49,19 @@ public class Simulation extends Model{
 	}
 	public void start()
 	{
-		if(state == AgentState.READY)
+		if(ag.state == AgentState.READY)
 		{
-			state = AgentState.RUNNING;
-			thread.start();
+			ag.state = AgentState.RUNNING;
+			ag.thread.start();
 			changed();
 		}
 	}
 	
 	public void stop()
 	{
-		if(state == AgentState.RUNNING || state == AgentState.SUSPENDED)
+		if(ag.state == AgentState.RUNNING || ag.state == AgentState.SUSPENDED)
 		{
-			state = AgentState.STOPPED;
+			ag.state = AgentState.STOPPED;
 			changed();
 			notify();
 		}
@@ -68,9 +69,9 @@ public class Simulation extends Model{
 	
 	public void suspend()
 	{
-		if(state == AgentState.RUNNING)
+		if(ag.state == AgentState.RUNNING)
 		{
-			state = AgentState.SUSPENDED;
+			ag.state = AgentState.SUSPENDED;
 			changed();
 		}
 		
@@ -78,9 +79,9 @@ public class Simulation extends Model{
 	
 	public void resume()
 	{
-		if(state == AgentState.SUSPENDED)
+		if(ag.state == AgentState.SUSPENDED)
 		{
-			state = AgentState.RUNNING;
+			ag.state = AgentState.RUNNING;
 			changed();
 			notify();
 		}
@@ -88,16 +89,22 @@ public class Simulation extends Model{
 	
 	public void readyUp()
 	{
-		state = AgentState.READY;
-		thread = new Thread();
+		ag.state = AgentState.READY;
+		ag.thread = new Thread();
 	}
 	
 
 
 	public void update() 
 	{
-		clock++;//increase clock
-		changed();//update clock
+		clock++;
+		changed();
+	}
+	
+
+	public Agent getNeighbor(Agent seeker) {
+		return null;
+		
 	}
 	
 }

@@ -12,8 +12,9 @@ public class ResumeCommand extends Command {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		Simulation sim = (Simulation) model;
 
+		sim.resume();
 	}
 
 }
