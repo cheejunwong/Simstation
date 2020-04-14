@@ -1,10 +1,15 @@
+/*
+ * Edit history:
+ *   Greyson, 4/1: created
+ *   
+ *
+*/
 package simstation;
 
 import mvc.Model;
 
 public class Simulation extends Model{
 
-	
 	private static final long serialVersionUID = 1L;
 	protected String name;
 	protected Long clock = 0L;
@@ -105,6 +110,12 @@ public class Simulation extends Model{
 	public Agent getNeighbor(Agent seeker) {
 		return null;
 		
+	}
+	
+	public Agent getAgent() {
+		
+		return ag;
+	
 	}
 	
 }
