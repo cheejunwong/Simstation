@@ -12,11 +12,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class Simulation extends Model {
-
-	private static final long serialVersionUID = 1L;
-	protected int clock;
-    protected Timer timer;
+public class Simulation extends Model {
+	private int clock;
+    private Timer timer;
     protected ArrayList<Agent> agents;
     public static Integer WORLD_SIZE = 250;
 
@@ -25,27 +23,30 @@ public abstract class Simulation extends Model {
         clock = 0;
     }
 
-    protected class ClockUpdater extends TimerTask {
+    private class ClockUpdater extends TimerTask {
         @Override
         public void run() {
             clock++;
         }
     }
 
-    protected void startTimer(){
+    private void startTimer(){
         timer = new Timer();
         timer.scheduleAtFixedRate(new ClockUpdater(), 1000,1000);
     }
-    protected void stopTimer(){
+    
+    private void stopTimer(){
         timer.cancel();
         timer.purge();
     }
 
-    protected abstract void populate();
+    protected void populate() {}
 
     public void start(){
+    	clock = 0;
         agents = new ArrayList<>();
         populate();
+        startTimer();
         for(int i = 0; i < agents.size(); i++){
             agents.get(i).start();
         }
@@ -57,11 +58,13 @@ public abstract class Simulation extends Model {
         for(int i = 0; i < agents.size(); i++){
             agents.get(i).suspend();
         }
+        stopTimer();
         changed();
     }
 
     public void resume(){
-
+    	
+    	startTimer();
         for(int i = 0; i < agents.size(); i++){
             agents.get(i).resume();
         }
@@ -73,6 +76,7 @@ public abstract class Simulation extends Model {
         for(int i = 0; i < agents.size(); i++){
             agents.get(i).stop();
         }
+        stopTimer();
         changed();
     }
 

@@ -6,79 +6,67 @@
 */
 package simstation;
 
-import java.awt.GridLayout;
-//import java.awt.event.ActionEvent;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
-import mvc.AppFactory;
 import mvc.AppPanel;
+import plague.PlagueFactory;
 
-public class SimStationPanel extends AppPanel{
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
-	private static final long serialVersionUID = 1L;
-	private JButton start, suspend, stop, resume, stats;
+public class SimStationPanel extends AppPanel {
+    private JButton start;
+    private JButton suspend;
+    private JButton resume;
+    private JButton stop;
+    private JButton stats;
 
-	public SimStationPanel(AppFactory factory) {
-		super(factory);
+    public SimStationPanel(SimStationFactory factory) {
+        super(factory);
+        SimulationView view = (SimulationView) factory.getView(model);
+        add(view);
+        this.setLayout(new GridLayout(1, 2));
 
-		this.setLayout(new GridLayout(1, 2));
+        start = new JButton("Start");
+        suspend = new JButton("Suspend");
+        resume = new JButton("Resume");
+        stop = new JButton("Stop");
+        stats = new JButton("Stats");
 
-		start = new JButton("Start");
-		start.addActionListener(this);
-		suspend = new JButton("Suspend");
-		suspend.addActionListener(this);
-		stop = new JButton("Stop");
-		stop.addActionListener(this);
-		resume = new JButton("Resume");
-		resume.addActionListener(this);
-		stats = new JButton("Stats");
-		stats.addActionListener(this);
 
-		JPanel buttonPanel = new JPanel();
+        start.addActionListener(this);
+        suspend.addActionListener(this);
+        resume.addActionListener(this);
+        stop.addActionListener(this);
+        stats.addActionListener(this);
 
-		JPanel startButton = new JPanel();
-		startButton.add(start);
-		JPanel suspendButton = new JPanel();
-		suspendButton.add(suspend);
-		JPanel stopButton = new JPanel();
-		stopButton.add(stop);
-		JPanel resumeButton = new JPanel();
-		resumeButton.add(resume);
-		JPanel statsButton = new JPanel();
-		statsButton.add(stats);
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new GridLayout(5, 1));
 
-		buttonPanel.add(startButton);
-		buttonPanel.add(suspendButton);
-		buttonPanel.add(stopButton);
-		buttonPanel.add(resumeButton);
-		buttonPanel.add(statsButton);
-		
-		buttonPanel.setLayout(new GridLayout(5, 1));
-		add(buttonPanel);
+        JPanel[] buttonPanel = new JPanel[5];
 
-		JPanel viewPanel = new JPanel();
-		viewPanel.add(new SimulationView((Simulation) model));
-		this.add(viewPanel);
-	}
+        for (int i = 0; i < buttonPanel.length; i++) {
+            buttonPanel[i] = new JPanel();
+            buttonPanel[i].setLayout(new FlowLayout());
+        }
 
-//	public void actionPerformed(ActionEvent ae) {
-//			Object source = ae.getSource();
-//
-//			if (source == "Turn") {
-//				Command cmmd = new TurnCommand(model);
-//				CommandProcessor.execute(cmmd);
-//			} else if (source == "Move") {
-//				Command cmmd = new MoveCommand(model);
-//				CommandProcessor.execute(cmmd);
-//			} else if (source == "Clear") {
-//				Command cmmd = new ClearCommand(model);
-//				CommandProcessor.execute(cmmd);
-//			} else {
-//				super.actionPerformed(ae);
-//			}
-//
-//	}
+        buttonPanel[0].add(start);
+        buttonPanel[1].add(suspend);
+        buttonPanel[2].add(resume);
+        buttonPanel[3].add(stop);
+        buttonPanel[4].add(stats);
+
+        for (int i = 0; i < buttonPanel.length; i++) {
+            leftPanel.add(buttonPanel[i]);
+        }
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new FlowLayout());
+        rightPanel.add(view);
+
+
+        add(leftPanel);
+        add(rightPanel);
+    }
 	
 }

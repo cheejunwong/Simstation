@@ -9,6 +9,7 @@ package simstation;
 import mvc.Command;
 import mvc.Model;
 import mvc.View;
+import plague.PlagueSimulation;
 
 public class SimStationFactory implements SimFactory {
 
@@ -27,19 +28,19 @@ public class SimStationFactory implements SimFactory {
 	@Override
 	public String getTitle() {
 		
-		return "Simulation";
+		return "SimStation";
 	}
 
 	@Override
 	public String about() {
 		
-		return "Simulation. Copyright 2020 by cj";
+		return "SimStation. Copyright 2020 by Mario Bros";
 	}
 
 	@Override
 	public String[] getHelp() {
 		
-		String[] cmmds = new String[5];
+		String[] cmmds = new String[6];
 		cmmds[0] = "**Command**";
 		cmmds[1] = "Start: Start the simulation";
 		cmmds[2] = "Suspend: Suspend the simulation";
@@ -68,7 +69,7 @@ public class SimStationFactory implements SimFactory {
 	@Override
 	public View getView(Model m) {
 		// TODO Auto-generated method stub
-		return null;
+		return new SimulationView((Simulation) m);
 	}
 
 }

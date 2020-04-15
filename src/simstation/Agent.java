@@ -9,8 +9,7 @@ package simstation;
 import java.io.Serializable;
 import java.util.Random;
 
-public abstract class Agent implements Runnable, Serializable{
-	
+public abstract class Agent implements Runnable,Serializable{
     protected String name;
     protected Heading heading;
     protected Integer xc;
@@ -47,8 +46,7 @@ public abstract class Agent implements Runnable, Serializable{
         return state;
     }
 
-
-    public synchronized void join() throws InterruptedException{
+    public synchronized void join()throws InterruptedException{
         if(thread!= null){
             thread.join();
         }
@@ -152,5 +150,5 @@ public abstract class Agent implements Runnable, Serializable{
         world.changed();
     }
 
-
 }
+

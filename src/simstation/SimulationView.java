@@ -6,30 +6,32 @@
 */
 package simstation;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
-import mvc.Model;
 import mvc.View;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
-public class SimulationView extends View{
+public class SimulationView extends View {
 
-	public SimulationView(Model model) {
-		super(model);
-		// TODO Auto-generated constructor stub
-	}
-	
-	public void paintComponent(Graphics gc) {
-		
-		Simulation sim = (Simulation) model;
-		Color oldColor = gc.getColor();
-		gc.setColor(Color.BLACK);
+    protected ArrayList<Agent> getAgents() {
+        Simulation model = (Simulation) this.model;
+        return model.agents;
+    }
 
-		Integer dotSize = 5;
-		gc.fillOval(sim.getAgent().getX(), sim.getAgent().getY(), dotSize/2, dotSize/2);
+    public SimulationView(Simulation model) {
+        super(model);
+        this.setPreferredSize(new Dimension(Simulation.WORLD_SIZE, Simulation.WORLD_SIZE));
+        this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    }
 
-		gc.setColor(oldColor);
-		
-	}
+    protected void paintComponent(Graphics gc){
+        Simulation simulationPaint = (Simulation) model;
+        Color oldColor = gc.getColor();
+        gc.setColor(Color.BLACK);
 
+        for (Agent agent : getAgents()) {
+            gc.fillOval(agent.getXc(), agent.getYc(), 5, 5);
+        }
+        gc.setColor(oldColor);
+    };
 }
