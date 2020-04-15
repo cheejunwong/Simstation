@@ -1,7 +1,7 @@
 /*
  * Edit history:
- *   
- *   
+ *   Lin, 4/1: created
+ *   Greyson, 4/2: fixed the bug (clock is not working)
  *
 */
 package simstation;

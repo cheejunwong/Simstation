@@ -1,3 +1,9 @@
+/*
+ * Edit history:
+ *   Lin, 4/5: created
+ *   
+ *
+*/
 package plague;
 
 import simstation.Agent;
