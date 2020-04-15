@@ -1,6 +1,6 @@
 /*
  * Edit history:
- *   Greyson, 4/1: created
+ *   
  *   
  *
 */
@@ -10,95 +10,147 @@ import java.io.Serializable;
 import java.util.Random;
 
 public abstract class Agent implements Runnable, Serializable{
+	
+    protected String name;
+    protected Heading heading;
+    protected Integer xc;
+    protected Integer yc;
+    protected Simulation world;
+    protected AgentState state;
+    private Thread thread;
+    protected Random random = new Random();
+    protected int speed;
 
-	
-	private static final long serialVersionUID = 1L;
-	protected int xc;
-	protected int yc;
-	protected Heading heading;
-	protected Simulation world;
-	protected Random rng = new Random();
-	protected int speed = rng.nextInt(10);
-	protected Thread thread = new Thread();
-	protected AgentState state = AgentState.READY;
-	
-	
-	
-	public void move(int steps) {
-		switch(heading) 
-		{
-			case NORTH:
-			{
-				if(yc - steps < 0)
-				{
-					yc = world.SIZE + (yc - steps);
-				}
-				yc -= steps;
-			}
-			case SOUTH:
-			{
-				if(yc + steps > world.SIZE)
-				{
-					yc = world.SIZE - steps;
-				}
-				yc += steps;
-			}
-			case EAST:
-			{
-				if(xc + steps < world.SIZE)
-				{
-					xc = world.SIZE - steps;
-				}
-				xc += steps;
-			}
-			case WEST:
-			{
-				if(xc - steps < 0)
-				{
-					xc = world.SIZE - (xc - steps);
-				}
-				xc -= steps;
-			}
-		}
-			world.changed();
-	}
-	
+    public Agent(String name, Simulation world){
+        this.name = name;
+        this.heading = Heading.values()[random.nextInt(4)];
+        this.speed = random.nextInt(10);
+        this.xc = random.nextInt(500);
+        this.yc = random.nextInt(500);
+        this.world = world;
+        this.state = null;
+    }
 
-	public void turn(Heading heading) {
-		this.heading = heading;
-	}
-	
-	public abstract void update();
-	
-	public int getX() {return xc;}
-	
-	public int getY() {return yc;}
+    public String getName(){
+        return name;
+    }
+    public Heading getHeading(){
+        return heading;
+    }
+    public Integer getXc(){
+        return xc;
+    }
+    public Integer getYc(){
+        return yc;
+    }
+    public synchronized AgentState getState(){
+        return state;
+    }
 
-	@Override
-	public void run()
-	{
-		state =  AgentState.RUNNING;
-		thread = Thread.currentThread();
-		world.changed();
-		while(state != AgentState.STOPPED)
-		{
-			update();
-			try {
-				Thread.sleep(50);
-				synchronized(this)
-				{
-					while(state == AgentState.SUSPENDED)
-					{
-						wait();
-					}
-				}
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-	}
+
+    public synchronized void join() throws InterruptedException{
+        if(thread!= null){
+            thread.join();
+        }
+    }
+
+    public synchronized String toString(){
+        return name + ".State = " + state;
+    }
+
+    public void run(){
+        thread = Thread.currentThread();
+        while (!isStopped()){
+            state = AgentState.RUNNING;
+            update();
+            try{
+                Thread.sleep(100);
+                synchronized (this){
+                    while(isSuspended()){
+                        wait();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void start(){
+        if(state == null){
+            state = AgentState.READY;
+            thread = new Thread(this);
+            thread.start();
+        }
+    }
+
+    public synchronized void stop(){
+        if(state != AgentState.STOPPED){
+            state = AgentState.STOPPED;
+        }
+    }
+
+    public synchronized boolean isStopped(){
+        return state == AgentState.STOPPED;
+    }
+
+    public synchronized void suspend(){
+        if(state == AgentState.RUNNING){
+            state = AgentState.SUSPENDED;
+        }
+    }
+
+    public synchronized boolean isSuspended(){
+        return state == AgentState.SUSPENDED;
+    }
+
+    public synchronized void resume(){
+        if(state == AgentState.SUSPENDED){
+            notify();
+            state = AgentState.READY;
+        }
+    }
+
+    public abstract void update();
+
+    public void move(int steps) {
+        switch(heading)
+        {
+            case NORTH:
+            {
+                yc += steps;
+                if(yc >= Simulation.WORLD_SIZE){
+                    yc = 0;
+                }
+                break;
+            }
+            case SOUTH:
+            {
+                yc -= steps;
+                if(yc <= 0){
+                    yc = Simulation.WORLD_SIZE;
+                }
+                break;
+            }
+            case EAST:
+            {
+                xc += steps;
+                if(xc >= Simulation.WORLD_SIZE){
+                    xc = 0;
+                }
+                break;
+            }
+            case WEST:
+            {
+                xc -= steps;
+                if(xc <= 0){
+                    xc = Simulation.WORLD_SIZE;
+                }
+                break;
+            }
+        }
+        world.changed();
+    }
+
 
 }

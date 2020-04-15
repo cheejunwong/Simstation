@@ -1,6 +1,6 @@
 /*
  * Edit history:
- *   Greyson, 4/1: created
+ *   
  *   
  *
 */
@@ -8,114 +8,96 @@ package simstation;
 
 import mvc.Model;
 
-public class Simulation extends Model{
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public abstract class Simulation extends Model {
 
 	private static final long serialVersionUID = 1L;
-	protected String name;
-	protected Long clock = 0L;
-	final static int SIZE = 300;
-	private Agent ag;
-	
-	public Long getClock(){
-		return clock;
-	}
-	
-	public Simulation() 
-	{
-		super();
-		ag.state = AgentState.READY;
-		ag.thread = new Thread();
-	}
-	
-	public void run()
-	{
-		ag.state =  AgentState.RUNNING;
-		ag.thread = Thread.currentThread();
-		changed();
-		while(ag.state != AgentState.STOPPED)
-		{
-			update();
-			try {
-				Thread.sleep(50);
-				synchronized(this)
-				{
-					while(ag.state == AgentState.SUSPENDED)
-					{
-						wait();
-					}
-				}
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-	}
-	public void start()
-	{
-		if(ag.state == AgentState.READY)
-		{
-			ag.state = AgentState.RUNNING;
-			ag.thread.start();
-			changed();
-		}
-	}
-	
-	public void stop()
-	{
-		if(ag.state == AgentState.RUNNING || ag.state == AgentState.SUSPENDED)
-		{
-			ag.state = AgentState.STOPPED;
-			changed();
-			notify();
-		}
-	}
-	
-	public void suspend()
-	{
-		if(ag.state == AgentState.RUNNING)
-		{
-			ag.state = AgentState.SUSPENDED;
-			changed();
-		}
-		
-	}
-	
-	public void resume()
-	{
-		if(ag.state == AgentState.SUSPENDED)
-		{
-			ag.state = AgentState.RUNNING;
-			changed();
-			notify();
-		}
-	}
-	
-	public void readyUp()
-	{
-		ag.state = AgentState.READY;
-		ag.thread = new Thread();
-	}
-	
+	protected int clock;
+    protected Timer timer;
+    protected ArrayList<Agent> agents;
+    public static Integer WORLD_SIZE = 250;
+
+    public Simulation(){
+        agents = new ArrayList<>();
+        clock = 0;
+    }
+
+    protected class ClockUpdater extends TimerTask {
+        @Override
+        public void run() {
+            clock++;
+        }
+    }
+
+    protected void startTimer(){
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new ClockUpdater(), 1000,1000);
+    }
+    protected void stopTimer(){
+        timer.cancel();
+        timer.purge();
+    }
+
+    protected abstract void populate();
+
+    public void start(){
+        agents = new ArrayList<>();
+        populate();
+        for(int i = 0; i < agents.size(); i++){
+            agents.get(i).start();
+        }
+        changed();
+    }
+
+    public void suspend(){
+
+        for(int i = 0; i < agents.size(); i++){
+            agents.get(i).suspend();
+        }
+        changed();
+    }
+
+    public void resume(){
+
+        for(int i = 0; i < agents.size(); i++){
+            agents.get(i).resume();
+        }
+        changed();
+    }
+
+    public void stop(){
+
+        for(int i = 0; i < agents.size(); i++){
+            agents.get(i).stop();
+        }
+        changed();
+    }
+
+    public synchronized Agent getNeighbor(Agent seeker){
+        Agent agent = null;
+        double min = Integer.MAX_VALUE;
+
+        for(Agent a: agents){
+            if(seeker!=a){
+                double distance = Math.sqrt(Math.pow((seeker.getXc() - a.getXc()),2) + Math.pow((seeker.getYc() - a.getYc()),2));
+                if(distance < min){
+                    min = distance;
+                    agent = a;
+                }
+            }
+        }
+        return agent;
+    }
+
+    public String[] getStats(){
+        String[] stats = new String[2];
+        stats[0] = "Number of agents: " + agents.size();
+        stats[1] = "clock: " + clock;
+        return stats;
+    }
 
 
-	public void update() 
-	{
-		clock++;
-		changed();
-	}
-	
-
-	public Agent getNeighbor(Agent seeker) {
-		return null;
-		
-	}
-	
-	public Agent getAgent() {
-		
-		return ag;
-	
-	}
-	
 }
