@@ -1,15 +1,16 @@
-package boids;
+/*
+ * Edit history:
+ *   Greyson, 4/5: created
+ *   
+ *
+*/
+package flocking;
 
 
 import mvc.Model;
-import mvc.View;
 import simstation.SimStationFactory;
 
-public class BoidsFactory extends SimStationFactory {
-//    @Override
-//    public View getView(Model model) {
-//        return new PlagueView((PlagueSimulation) model);
-//    }
+public class FlockingFactory extends SimStationFactory {
 
     @Override
     public Model makeModel() {

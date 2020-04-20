@@ -8,11 +8,8 @@ package simstation;
 
 
 import mvc.AppPanel;
-import plague.PlagueFactory;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class SimStationPanel extends AppPanel {
     private JButton start;

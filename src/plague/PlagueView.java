@@ -1,7 +1,7 @@
 /*
  * Edit history:
  *   Lin, 4/5: created
- *   
+ *   Greyson, 4/6: fixed bug in paintComponent()
  *
 */
 package plague;
@@ -32,7 +32,7 @@ public class PlagueView extends SimulationView {
             else
                 gc.setColor(Color.GREEN);
 
-            int r = 10;
+            int r = 5;
             gc.fillOval(agent.getXc(), agent.getYc(), r, r);
         }
 

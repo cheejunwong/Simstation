@@ -1,9 +1,33 @@
+/*
+ * Edit history:
+ *   Dickson, 4/14: created
+ *   
+ *
+*/
 package randomwalk;
 
-public class RandomWalkFactory {
+import mvc.Model;
+import simstation.SimStationFactory;
 
-	public RandomWalkFactory() {
-		// TODO Auto-generated constructor stub
-	}
+public class RandomWalkFactory extends SimStationFactory {
 
+    @Override
+    public Model makeModel() {
+        return new RandomWalk();
+    }
+
+    @Override
+    public String toString() {
+        return "RandomWalk Simulation";
+    }
+    
+    @Override
+    public String getTitle() {
+    	return "RandomWalk Simulation";
+    }
+    
+    @Override
+    public String about() {
+    	return "RandomWalk Simulation. Copyright 2020 by Mario Bros";
+    }
 }

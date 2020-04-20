@@ -9,7 +9,6 @@ package simstation;
 import mvc.Command;
 import mvc.Model;
 import mvc.View;
-import plague.PlagueSimulation;
 
 public class SimStationFactory implements SimFactory {
 

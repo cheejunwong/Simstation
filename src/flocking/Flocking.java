@@ -1,15 +1,14 @@
 /*
  * Edit history:
- *   Greyson, 4/1: created
+ *   Greyson, 4/5: created
  *   
  *
 */
-package boids;
+package flocking;
 
 
 import mvc.AppPanel;
 import simstation.Agent;
-import simstation.SimStationFactory;
 import simstation.SimStationPanel;
 import simstation.Simulation;
 
@@ -28,7 +27,7 @@ public class Flocking extends Simulation {
     }
     
     public static void main(String[] args){
-        AppPanel panel = new SimStationPanel(new BoidsFactory());
+        AppPanel panel = new SimStationPanel(new FlockingFactory());
         panel.display();
     }
 }

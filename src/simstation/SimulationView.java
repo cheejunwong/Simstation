@@ -27,7 +27,7 @@ public class SimulationView extends View {
     protected void paintComponent(Graphics gc){
         Simulation simulationPaint = (Simulation) model;
         Color oldColor = gc.getColor();
-        gc.setColor(Color.BLACK);
+        gc.setColor(Color.RED);
 
         for (Agent agent : getAgents()) {
             gc.fillOval(agent.getXc(), agent.getYc(), 5, 5);

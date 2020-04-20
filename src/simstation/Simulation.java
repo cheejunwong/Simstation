@@ -13,7 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Simulation extends Model {
-	private int clock;
+	protected int clock;
     private Timer timer;
     protected ArrayList<Agent> agents;
     public static Integer WORLD_SIZE = 250;
@@ -103,5 +103,13 @@ public class Simulation extends Model {
         return stats;
     }
 
+    public int getClock() {
+    	return clock;
+    }
+
+	public ArrayList<Agent> getAgents() {
+		// TODO Auto-generated method stub
+		return agents;
+	}
 
 }
